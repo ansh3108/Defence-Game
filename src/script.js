@@ -241,3 +241,112 @@ function initiateGame() {
             createAsteroid();
         }
     }
+
+    function createExplosion(asteroid) {
+        ctx.save();
+        ctx.translate(asteroid.realX, asteroid.realY);
+        ctx.rotate(asteroid.deg);
+
+        var spriteY;
+        var spriteX = 256;
+        if (asteroid.state == 0) {
+            spriteY = 0;
+            spriteX = 0;
+        } else if (asteroid.state < 8) {
+            spriteY = 0;
+        } else if (asteroid.state < 16) {
+            spriteY = 256;
+        } else if (asteroid.state < 24) {
+            spriteY = 512;
+        } else {
+            spriteY = 768;
+        }
+
+        if (asteroid.state == 8 || asteroid.state == 16 || asteroid.state == 24) {
+            asteroid.stateX = 0;
+        }
+
+        ctx.drawImage(spriteExplosion, asteroid.stateX += spriteX, spriteY, 256, 256, -(asteroid.width / asteroid.size) / 2,
+            -(asteroid.height / asteroid.size) / 2, asteroid.width / asteroid.size, asteroid.height / asteroid.size);
+        asteroid.state += 1;
+
+        if (asteroid.state == 31) {
+            asteroid.extinct = true;
+        }
+
+        ctx.restore();
+    }
+
+    function startGame() {
+        if (!gameOver) {
+            ctx.clearRect(0, 0, cW, cH);
+            ctx.beginPath();
+
+            renderPlanet();
+            renderPlayer();
+
+            if (playing) {
+                renderAsteroids();
+
+                ctx.font = "20px Verdana";
+                ctx.fillStyle = "white";
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = "left";
+                ctx.fillText('Record: ' + record, 20, 30);
+
+                ctx.font = "40px Verdana";
+                ctx.fillStyle = "white";
+                ctx.strokeStyle = "black";
+                ctx.textAlign = "center";
+                ctx.textBaseline = 'middle';
+                ctx.strokeText('' + destroyed, cW / 2, cH / 2);
+                ctx.fillText('' + destroyed, cW / 2, cH / 2);
+
+            } else {
+                ctx.drawImage(sprite, 428, 12, 70, 70, cW / 2 - 35, cH / 2 - 35, 70, 70);
+            }
+        } else if (count < 1) {
+            count = 1;
+            ctx.fillStyle = 'rgba(0,0,0,0.75)';
+            ctx.rect(0, 0, cW, cH);
+            ctx.fill();
+
+            ctx.font = "60px Verdana";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("GAME OVER", cW / 2, cH / 2 - 150);
+
+            ctx.font = "20px Verdana";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("Total destroyed: " + destroyed, cW / 2, cH / 2 + 140);
+
+            record = destroyed > record ? destroyed : record;
+
+            ctx.font = "20px Verdana";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("RECORD: " + record, cW / 2, cH / 2 + 185);
+
+            ctx.drawImage(sprite, 500, 18, 70, 70, cW / 2 - 35, cH / 2 + 40, 70, 70);
+
+            canvas.removeAttribute('class');
+        }
+    }
+
+    function gameLoop() {
+        window.requestAnimationFrame(gameLoop);
+        startGame();
+    }
+
+    gameLoop();
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    if (~window.location.href.indexOf('full')) {
+        var full = document.getElementsByTagName('a');
+        full[0].setAttribute('style', 'display: none');
+    }
+}
