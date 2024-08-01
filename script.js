@@ -266,3 +266,74 @@ function initGame() {
 
         ctx.restore();
     }
+
+    function gameLoop() {
+        if (!gameOver) {
+            ctx.clearRect(0, 0, cW, cH);
+            ctx.beginPath();
+            drawPlanet();
+            drawPlayer();
+
+            if (playing) {
+                drawAsteroids();
+                ctx.font = "20px Verdana";
+                ctx.fillStyle = "white";
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = "left";
+                ctx.fillText('Record: ' + record, 20, 30);
+
+                ctx.font = "40px Verdana";
+                ctx.fillStyle = "white";
+                ctx.strokeStyle = "black";
+                ctx.textAlign = "center";
+                ctx.textBaseline = 'middle';
+                ctx.strokeText('' + destroyed, cW / 2, cH / 2);
+                ctx.fillText('' + destroyed, cW / 2, cH / 2);
+            } else {
+                ctx.drawImage(sprite, 428, 12, 70, 70, cW / 2 - 35, cH / 2 - 35, 70, 70);
+            }
+        } else if (count < 1) {
+            count = 1;
+            ctx.fillStyle = 'rgba(0,0,0,0.75)';
+            ctx.rect(0, 0, cW, cH);
+            ctx.fill();
+
+            ctx.font = "60px Verdana";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("GAME OVER", cW / 2, cH / 2 - 150);
+
+            ctx.font = "20px Verdana";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("Total destroyed: " + destroyed, cW / 2, cH / 2 + 140);
+
+            record = destroyed > record ? destroyed : record;
+
+            ctx.font = "20px Verdana";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("RECORD: " + record, cW / 2, cH / 2 + 185);
+
+            ctx.drawImage(sprite, 500, 18, 70, 70, cW / 2 - 35, cH / 2 + 40, 70, 70);
+
+            canvas.removeAttribute('class');
+        }
+    }
+
+    function animate() {
+        window.requestAnimationFrame(animate);
+        gameLoop();
+    }
+
+    animate();
+
+    function random(from, to) {
+        return Math.floor(Math.random() * (to - from + 1)) + from;
+    }
+
+    if (~window.location.href.indexOf('full')) {
+        var full = document.getElementsByTagName('a');
+        full[0].setAttribute('style', 'display: none');
+    }
+}
