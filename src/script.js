@@ -350,3 +350,4 @@ function initiateGame() {
         full[0].setAttribute('style', 'display: none');
     }
 }
+
