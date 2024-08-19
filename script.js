@@ -337,3 +337,4 @@ function initGame() {
         full[0].setAttribute('style', 'display: none');
     }
 }
+
