@@ -1,3 +1,4 @@
+
 window.addEventListener("DOMContentLoaded", initGame);
 
 var sprite = new Image();
